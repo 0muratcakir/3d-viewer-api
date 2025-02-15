@@ -135,7 +135,10 @@ app.post('/api/configs', authenticateToken, async (req, res) => {
 
 // Health check endpoint
 app.get('/health', (req, res) => {
-  res.json({ status: 'healthy' });
+  res.json({ 
+    status: 'healthy',
+    mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
+  });
 });
 
 // Error handling middleware
