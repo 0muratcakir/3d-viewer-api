@@ -13,8 +13,12 @@ app.use(express.json());
 
 // MongoDB bağlantısı
 mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.error('MongoDB connection error:', err));
+  .then(() => {
+    console.log('MongoDB connected successfully');
+  })
+  .catch(err => {
+    console.error('MongoDB connection error:', err.message);
+  });
 
 // Model şemaları
 const assetSchema = new mongoose.Schema({
@@ -132,6 +136,12 @@ app.post('/api/configs', authenticateToken, async (req, res) => {
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({ status: 'healthy' });
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error('Error:', err.message);
+  res.status(500).json({ error: err.message });
 });
 
 const PORT = process.env.PORT || 3000;
